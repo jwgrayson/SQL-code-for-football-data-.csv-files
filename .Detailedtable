@@ -69,7 +69,7 @@ CREATE TABLE Combined_Table (
     );
     
 INSERT INTO Combined_table (Team, Games, W, D, L, Pts, GF, GA, GD, STF, TSF, STA, TSA, GR, STR, TSR, "Sh%", "Sv%", PDO) 
-SELECT DISTINCT hr.Team, hr.Games + ar.Games, hr.W + ar.W, hr.D + ar.D, hr.L + ar.L, 3 * (hr.W + ar.W) + hr.D + ar.D, hr.GF + ar.GF, hr.GA + ar.GA, hr.GF + ar.GF - hr.GA - ar.GA, hr.STF + ar.STF, hr.TSF + ar.TSF, hr.STA + ar.STA, hr.TSA + ar.TSA, ROUND((hr.GF + ar.GF) / (hr.GF + ar.GF + hr.GA + ar.GA),3), ROUND((hr.STF + ar.STF) / (hr.STF + ar.STF + hr.STA + ar.STA),3), ROUND((hr.TSF + ar.TSF) / (hr.TSF + ar.TSF + hr.TSA + ar.TSA),3), ROUND(100* ((hr.GF + ar.GF)/(hr.STF + ar.STF)),1), ROUND(100*((hr.GA + ar.GA)/(hr.STA + ar.STA)),1), ROUND(1000*((hr.GF + ar.GF)/(hr.STF + ar.STF) + 1 - (hr.GA + ar.GA)/(hr.STA + ar.STA)),0) FROM hr
+SELECT DISTINCT hr.Team, hr.Games + ar.Games, hr.W + ar.W, hr.D + ar.D, hr.L + ar.L, 3 * (hr.W + ar.W) + hr.D + ar.D, hr.GF + ar.GF, hr.GA + ar.GA, hr.GF + ar.GF - hr.GA - ar.GA, hr.STF + ar.STF, hr.TSF + ar.TSF, hr.STA + ar.STA, hr.TSA + ar.TSA, ROUND((hr.GF + ar.GF) / (hr.GF + ar.GF + hr.GA + ar.GA),3), ROUND((hr.STF + ar.STF) / (hr.STF + ar.STF + hr.STA + ar.STA),3), ROUND((hr.TSF + ar.TSF) / (hr.TSF + ar.TSF + hr.TSA + ar.TSA),3), ROUND(100* ((hr.GF + ar.GF)/(hr.STF + ar.STF)),1), ROUND(100*(1-((hr.GA + ar.GA))/(hr.STA + ar.STA)),1), ROUND(1000*((hr.GF + ar.GF)/(hr.STF + ar.STF) + 1 - (hr.GA + ar.GA)/(hr.STA + ar.STA)),0) FROM hr
     JOIN ar ON hr.Team = ar.Team
     ORDER BY 3 * (hr.W + ar.W) + hr.D + ar.D desc, hr.GF + ar.GF - hr.GA - ar.GA desc, hr.GF + ar.GF desc;
 
