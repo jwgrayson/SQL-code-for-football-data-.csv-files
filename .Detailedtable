@@ -77,3 +77,27 @@ DROP TABLE hr;
 DROP TABLE ar;
 
 SELECT * FROM Combined_table;
+
+/*
+Column details:
+Pos - League position
+Team - Team name
+Games - Number of games played
+W - Number of games won
+D - Number of games drawn
+L - Number of games lost
+Pts - Points scored by the team
+GF - Goals for the team
+GA - Goals against the team
+GD - Goal difference (calculated as GF minus GA)
+STF - Shots on target for the team
+TSF - Total shots for the team
+STA - Shots on target against the team
+TSA - Total shouts against the team
+GR - The teams goal ratio (GF / (GF + GA))
+STR - The teams shots on target ratio (STF / (STF + STA))
+TSR - The teams total shots ratio (TSF / (TSF + TSA))
+Sh% - The teams shooting percentage (GF / STF)
+Sv% - The teams save percentage ((STA - GA) / STA)
+PDO - The teams PDO (1000 * (Sh% + Sv%))
+*/
