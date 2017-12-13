@@ -1,2 +1,79 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+DROP TABLE IF EXISTS hr;
+
+CREATE TABLE hr (
+    ID INTEGER,
+    Team TEXT,
+    Games INTEGER,
+    W INTEGER,
+    D INTEGER,
+    L INTEGER,
+    GF REAL,
+    STF REAL,
+    TSF REAL,
+    GA REAL,
+    STA REAL,
+    TSA REAL,
+    PRIMARY KEY (ID)
+    );
+    
+INSERT INTO hr (Team, Games, W, D, L, GF, STF, TSF, GA, STA, TSA) 
+SELECT DISTINCT HomeTeam, COUNT(Hometeam), SUM(CASE WHEN FTHG > FTAG THEN 1 ELSE 0 END), SUM(CASE WHEN FTHG = FTAG THEN 1 ELSE 0 END), SUM(CASE WHEN FTHG < FTAG THEN 1 ELSE 0 END), SUM(FTHG), SUM(HST), SUM(HS), SUM (FTAG), SUM(AST), SUM("AS") FROM Main
+    GROUP BY HomeTeam;
+    
+DROP TABLE IF EXISTS ar;
+
+CREATE TABLE ar (
+    ID INTEGER,
+    Team TEXT,
+    Games INTEGER,
+    W INTEGER,
+    D INTEGER,
+    L INTEGER,
+    GF REAL,
+    STF REAL,
+    TSF REAL,
+    GA REAL,
+    STA REAL,
+    TSA REAL,
+    PRIMARY KEY (ID)
+    );
+    
+INSERT INTO ar (Team, Games, W, D, L, GF, STF, TSF, GA, STA, TSA) 
+SELECT DISTINCT AwayTeam, COUNT(Awayteam), SUM(CASE WHEN FTHG < FTAG THEN 1 ELSE 0 END), SUM(CASE WHEN FTHG = FTAG THEN 1 ELSE 0 END), SUM(CASE WHEN FTHG > FTAG THEN 1 ELSE 0 END), SUM(FTAG), SUM(AST), SUM("AS"), SUM (FTHG), SUM(HST), SUM(HS) FROM Main
+    GROUP BY AwayTeam;
+
+DROP TABLE IF EXISTS Combined_Table;
+
+CREATE TABLE Combined_Table (
+    Pos INTEGER,
+    Team TEXT,
+    Games INTEGER,
+    W INTEGER,
+    D INTEGER,
+    L INTEGER,
+    Pts INTEGER,
+    GF INTEGER,
+    GA INTEGER,
+    GD INTEGER,
+    STF INTEGER,
+    TSF INTEGER,
+    STA INTEGER,
+    TSA INTEGER,
+    GR REAL,
+    STR REAL,
+    TSR REAL,
+    "Sh%" REAL,
+    "Sv%" REAL,
+    PDO REAL,
+    PRIMARY KEY (Pos)
+    );
+    
+INSERT INTO Combined_table (Team, Games, W, D, L, Pts, GF, GA, GD, STF, TSF, STA, TSA, GR, STR, TSR, "Sh%", "Sv%", PDO) 
+SELECT DISTINCT hr.Team, hr.Games + ar.Games, hr.W + ar.W, hr.D + ar.D, hr.L + ar.L, 3 * (hr.W + ar.W) + hr.D + ar.D, hr.GF + ar.GF, hr.GA + ar.GA, hr.GF + ar.GF - hr.GA - ar.GA, hr.STF + ar.STF, hr.TSF + ar.TSF, hr.STA + ar.STA, hr.TSA + ar.TSA, ROUND((hr.GF + ar.GF) / (hr.GF + ar.GF + hr.GA + ar.GA),3), ROUND((hr.STF + ar.STF) / (hr.STF + ar.STF + hr.STA + ar.STA),3), ROUND((hr.TSF + ar.TSF) / (hr.TSF + ar.TSF + hr.TSA + ar.TSA),3), ROUND(100* ((hr.GF + ar.GF)/(hr.STF + ar.STF)),1), ROUND(100*((hr.GA + ar.GA)/(hr.STA + ar.STA)),1), ROUND(1000*((hr.GF + ar.GF)/(hr.STF + ar.STF) + 1 - (hr.GA + ar.GA)/(hr.STA + ar.STA)),0) FROM hr
+    JOIN ar ON hr.Team = ar.Team
+    ORDER BY 3 * (hr.W + ar.W) + hr.D + ar.D desc, hr.GF + ar.GF - hr.GA - ar.GA desc, hr.GF + ar.GF desc;
+
+DROP TABLE hr;
+DROP TABLE ar;
+
+SELECT * FROM Combined_table;
